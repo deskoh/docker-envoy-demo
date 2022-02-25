@@ -1,0 +1,68 @@
+version: "3.7"
+services:
+
+  front-envoy:
+    image: envoyproxy/envoy:v1.21-latest
+    container_name: envoy
+    # Uncomment following for debug logs
+    # command:
+    # - --log-level debug
+    # - --config-path /etc/envoy/envoy.yaml
+    volumes:
+      - ./envoy/${FRONT_ENVOY_YAML}:/etc/envoy/envoy.yaml
+    networks:
+    - envoymesh
+    ports:
+    - "8000:8000"
+    # admin interface
+    - "9901:9901"
+
+  ext_authz-http-service:
+    build:
+      context: ./auth
+      dockerfile: http-service/Dockerfile
+    container_name: authz-http-service
+    volumes:
+    - ./users.json:/etc/users.json
+    environment:
+    - USERS=/etc/users.json
+    networks:
+    - envoymesh
+
+  ext_authz-grpc-service:
+    build:
+      context: ./auth
+      dockerfile: grpc-service/Dockerfile
+    container_name: authz-grpc-service
+    volumes:
+    - ./users.json:/etc/users.json
+    networks:
+    - envoymesh
+
+  ext_authz-opa-service:
+    image: openpolicyagent/opa:0.37.2-istio
+    container_name: authz-opa-service
+    volumes:
+    - ./config/opa-service/policy.rego:/etc/policy.rego
+    command:
+    - run
+    - --log-level=debug
+    - --server
+    - --log-format=json-pretty
+    - --set=plugins.envoy_ext_authz_grpc.addr=:9002
+    - --set=decision_logs.console=true
+    - /etc/policy.rego
+    networks:
+    - envoymesh
+
+  upstream-service:
+    image: kennethreitz/httpbin
+    environment:
+      - "GUNICORN_CMD_ARGS=\"--capture-output --error-logfile - --access-logfile - --access-logformat \"%(h)s %(t)s %(r)s %(s)s Host: %({Host}i)s}\"\""
+    container_name: server
+    networks:
+    - envoymesh
+
+networks:
+  envoymesh:
+    name: envoymesh
