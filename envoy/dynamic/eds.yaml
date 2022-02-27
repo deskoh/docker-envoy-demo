@@ -1,0 +1,15 @@
+version_info: "0"
+resources:
+- "@type": type.googleapis.com/envoy.config.endpoint.v3.ClusterLoadAssignment
+  cluster_name: upstream-service
+  endpoints:
+  - lb_endpoints:
+    - endpoint:
+        address:
+          socket_address:
+            # REQUIRED FOR EDS
+            # For STATIC or EDS, it is expected to be a direct IP address
+            # else resolver_name required. See envoyproxy/envoy/#4290 #5186
+            # resolver_name: ???
+            address: upstream-service
+            port_value: 80

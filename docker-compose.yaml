@@ -10,6 +10,7 @@ services:
     # - --config-path /etc/envoy/envoy.yaml
     volumes:
       - ./envoy/${FRONT_ENVOY_YAML}:/etc/envoy/envoy.yaml
+      - ./envoy/dynamic:/etc/envoy/dynamic
     networks:
     - envoymesh
     ports:

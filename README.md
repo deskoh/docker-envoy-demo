@@ -51,6 +51,14 @@ FRONT_ENVOY_YAML=jwt.yaml docker-compose up -d front-envoy upstream-service
 FRONT_ENVOY_YAML=websocket.yaml docker-compose up -d front-envoy upstream-websocket-service
 ```
 
+## Dynamic Configuration
+
+```sh
+FRONT_ENVOY_YAML=dynamic.yaml docker-compose up -d front-envoy upstream-service
+# if file is mounted in wsl, file changes are not picked up, use `sed` instead
+# docker exec envoy sed -i s/8080/80/ /etc/envoy/dynamic/cds.yaml
+```
+
 ## Reference
 
 [Envoy Docs: ext_authz](https://www.envoyproxy.io/docs/envoy/latest/start/sandboxes/ext_authz)
@@ -62,6 +70,8 @@ FRONT_ENVOY_YAML=websocket.yaml docker-compose up -d front-envoy upstream-websoc
 [Network Filters](https://www.envoyproxy.io/docs/envoy/latest/configuration/listeners/network_filters/network_filters)
 
 [HTTP Filters](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/http_filters)
+
+[Dynamic Configuration](https://www.envoyproxy.io/docs/envoy/latest/configuration/overview/examples)
 
 [envoy-opa-compose](http://github.com/shanesoh/envoy-opa-compose)
 

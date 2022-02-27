@@ -1,0 +1,20 @@
+version_info: "0"
+resources:
+- "@type": type.googleapis.com/envoy.config.cluster.v3.Cluster
+  name: upstream-service
+  type: STRICT_DNS
+  lb_policy: ROUND_ROBIN
+  load_assignment:
+    cluster_name: upstream-service
+    endpoints:
+    - lb_endpoints:
+      - endpoint:
+          address:
+            socket_address:
+              address: upstream-service
+              port_value: 80
+  # connect_timeout: 2.0s
+  # type: EDS
+  # eds_cluster_config:
+  #   eds_config:
+  #     path: /etc/envoy/dynamic/eds.yaml
