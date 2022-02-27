@@ -45,6 +45,12 @@ curl -v -XPOST localhost:8000/get?show_env=1
 FRONT_ENVOY_YAML=jwt.yaml docker-compose up -d front-envoy upstream-service
 ```
 
+## Websocket
+
+```sh
+FRONT_ENVOY_YAML=websocket.yaml docker-compose up -d front-envoy upstream-websocket-service
+```
+
 ## Reference
 
 [Envoy Docs: ext_authz](https://www.envoyproxy.io/docs/envoy/latest/start/sandboxes/ext_authz)

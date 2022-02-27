@@ -63,6 +63,14 @@ services:
     networks:
     - envoymesh
 
+  upstream-websocket-service:
+    build:
+      context: ./websocket-server
+    container_name: websocket-server
+    networks:
+    - envoymesh
+
+
 networks:
   envoymesh:
     name: envoymesh
