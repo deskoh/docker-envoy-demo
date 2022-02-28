@@ -2,6 +2,25 @@
 
 Envoy Proxy Demo for Authentication and Authorization
 
+```mermaid
+sequenceDiagram
+Client->>+Envoy: Payload
+alt jwt_authn filter
+    Envoy->>Dex: Get JWKS
+    Dex-->>Envoy: Response
+    Envoy->>Envoy: Verify JWT
+    Envoy->>Envoy: Add 'x-jwt-payload', 'x-jwt-email'
+end
+alt ext_authz filter
+    Envoy->>+gRPC / HTTP service: gRPC / HTTP call
+    gRPC / HTTP service->>gRPC / HTTP service: Add 'x-current-user'
+    gRPC / HTTP service-->>-Envoy: 200
+end
+Envoy->>+Upstream / Httpbin: Payload + Injected headers
+Upstream / Httpbin-->>-Envoy: Response
+Envoy-->>-Client: Response
+```
+
 ## HTTP Webhook
 
 ```sh
