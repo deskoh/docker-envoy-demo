@@ -43,13 +43,12 @@ static_resources:
               "@type": type.googleapis.com/envoy.extensions.filters.http.jwt_authn.v3.JwtAuthentication
               providers:
                 keycloak:
-                  issuer: http://3784-180-129-106-95.ngrok.io/realms/dev
+                  issuer: http://dex.127.0.0.1.nip.io:5556/dex
                   audiences:
-                  - js-console
-                  - account
+                  - example-app
                   remote_jwks:
                     http_uri:
-                      uri: http://3784-180-129-106-95.ngrok.io/realms/dev/protocol/openid-connect/certs
+                      uri: http://dex.127.0.0.1.nip.io:5556/dex/keys
                       cluster: keycloak_jwks
                       timeout: 5s
                     cache_duration:
@@ -94,14 +93,14 @@ static_resources:
         - endpoint:
             address:
               socket_address:
-                address: 3784-180-129-106-95.ngrok.io
-                port_value: 80
+                address: dex.127.0.0.1.nip.io
+                port_value: 5556
     # For HTTPS
     # transport_socket:
     #   name: envoy.transport_sockets.tls
     #   typed_config:
     #     "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
-    #     sni: 3784-180-129-106-95.ngrok.io
+    #     sni: dex.127.0.0.1.nip.io
     #     # Server certificate verification is not enabled by default. Configure trusted_ca to enable verification.
     #     common_tls_context:
     #       validation_context:

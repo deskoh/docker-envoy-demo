@@ -64,6 +64,31 @@ services:
     networks:
     - envoymesh
 
+  dex:
+    image: ghcr.io/dexidp/dex:v2.31.0
+    container_name: dex
+    # Uncomment following to use another config
+    # command:
+    # - "dex serve"
+    # - "/etc/dex/config.yaml"
+    volumes:
+      - ./dex/config.yaml:/etc/dex/config.docker.yaml
+    # environment:
+    # - DEX_ISSUER=http://127.0.0.1:5556/dex
+    # - DEX_TELEMETRY_HTTP=0.0.0.0:5558
+    # - DEX_LOG_LEVEL=info
+    # - DEX_CONNECTORS_ENABLE_MOCK=true
+    networks:
+      envoymesh:
+        aliases:
+        # alias for envoy to reach dex jwks endpoint
+        - "dex.127.0.0.1.nip.io"
+    ports:
+    # web interface
+    - "5556:5556"
+    # telemetry
+    # - "5558:5558"
+
   upstream-websocket-service:
     build:
       context: ./websocket-server

@@ -42,7 +42,11 @@ curl -v -XPOST localhost:8000/get?show_env=1
 ## JWT Authentication
 
 ```sh
-FRONT_ENVOY_YAML=jwt.yaml docker-compose up -d front-envoy upstream-service
+FRONT_ENVOY_YAML=jwt.yaml docker-compose up -d front-envoy upstream-service dex
+# Discovery endpoint: http://dex.127.0.0.1.nip.io:5556/dex/.well-known/openid-configuration
+# Get JWT via Auth Code Flow using Postman
+
+curl -H "Authorization: Bearer ey..." localhost:8000/get
 ```
 
 ## Websocket
