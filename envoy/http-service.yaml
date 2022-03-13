@@ -19,7 +19,7 @@ static_resources:
           route_config:
             name: local_route
             virtual_hosts:
-            - name: upstream
+            - name: backend
               domains:
               - "*"
               routes:
@@ -47,11 +47,26 @@ static_resources:
   - name: upstream-service
     type: STRICT_DNS
     lb_policy: ROUND_ROBIN
+    # Disable panic mode
+    # See https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/upstream/load_balancing/panic_threshold.html
+    common_lb_config:
+      healthy_panic_threshold: { value: 0.0 }
+    health_checks:
+      - timeout: 2s
+        interval: 10s
+        interval_jitter: 1s
+        unhealthy_threshold: 2
+        healthy_threshold: 1
+        always_log_health_check_failures: true
+        http_health_check:
+          path: "/get"
     load_assignment:
       cluster_name: upstream-service
       endpoints:
       - lb_endpoints:
         - endpoint:
+            # health_check_config:
+            #   port_value: 80
             address:
               socket_address:
                 address: upstream-service
